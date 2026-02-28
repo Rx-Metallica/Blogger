@@ -20,6 +20,35 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## CI/CD with GitHub Actions
+
+This repository includes a production-oriented GitHub Actions setup:
+
+- **CI (`.github/workflows/ci.yml`)** runs on every PR to `main` and every push to `main`.
+  - Installs dependencies with `npm ci`.
+  - Runs linting (`npm run lint`).
+  - Builds the app (`npm run build`).
+- **CD (`.github/workflows/cd.yml`)** deploys to Vercel on pushes to `main` (or manually via `workflow_dispatch`).
+  - Validates required deployment secrets.
+  - Builds with Vercel CLI.
+  - Deploys a prebuilt production artifact.
+- **Dependency Review (`.github/workflows/dependency-review.yml`)** checks newly introduced dependencies in pull requests.
+
+### Required secrets for deployment
+
+Configure these in your repository settings (`Settings → Secrets and variables → Actions`) or in the `production` environment:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+### Recommended branch protection
+
+For a safer production flow, protect `main` and require these status checks:
+
+- `CI / lint-and-build`
+- `Dependency Review / dependency-review`
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
